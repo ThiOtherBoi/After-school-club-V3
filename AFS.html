@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    <title>After School Club</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"> 
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="lessons.js"></script>
+    </head>
+    <body>
+        <header class="header">
+          <h1  style="text-align: center;font-weight: bold;"> AFTER SCHOOL CLUB</h1>
+        </header> 
+        <div id="app" >
+            <div class="lower-header">
+                <button v-on:click="showCheckout" class="button" >{{ cartItemCount }}&nbsp<span class="fas fa-cart-plus" ></span>&nbsp CART</button>
+                <div class="filterDrpdwn">
+                    <button class="filterDrpdwnBtn">FILTER</button>
+                    <div class="filterDrpdwn-content">
+                        <a href="#" @click="sort('subject')">Name</a>
+                        <a href="#" @click="sort('location')">Location</a>
+                        <a href="#" @click="sort('price')">Price</a>
+                        <a href="#" @click="sort('availableInventory')">Spaces Available</a>
+                        <div class="filterGroup" style="padding: 1%;">
+                            <input type="radio" id="Ascending" value="Ascending" name="filter" checked>
+                            <label for="Ascending">Ascending</label>
+                            <input type="radio" id="Descending" value="Descending" name="filter">
+                            <label for="Descending">Descending</label>
+                        </div>
+                    </div>
+                  </div>
+                <span><input class="Search" type="text" v-model="searchString" placeholder="Search..."></span>
+            </div>
+            <div v-if="showLesson" class="row">   
+                <div  v-for="lesson in searchFilter">
+                    <div class="column" >
+                        <img  v-bind:src="lesson.Image" style="margin-left: 10%;">
+                        <div class="text" style="display: inline-block;margin-left: 10%;">
+                            <h2 v-text="lesson.subject"></h2>
+                            <h3 v-text="lesson.location">London</h3>
+                            <p>Price: {{lesson.price}}</p>
+                            <p>Spaces Available: {{lesson.availableInventory}}</p>
+                            <button class="addtoCartButton" v-on:click="addToCart(lesson)" v-if="canAddtoCart(lesson)">ADD TO CART</button>
+                            <button class="addtoCartButton" style="background-color:rgb(56, 55, 55)" disabled='disabled' v-else>ADD TO CART</button>
+                            <span v-if="lesson.availableInventory === cartCount(lesson.id)" style="color: red;">
+                            <strong>&nbsp No Stock Available</strong> 
+                            </span>
+                            <span v-else-if="lesson.availableInventory - cartCount(lesson.id) < 5" style="color: rgb(240, 217, 11);">
+                            <strong>&nbsp Only {{lesson.availableInventory - cartCount(lesson.id)}} left!</strong>
+                            </span>
+                            <span v-else style="color: rgb(32, 170, 4);">
+                            <strong>&nbsp BUY NOW! </strong>
+                            </span>
+                            <div>
+                                <span v-for="n in lesson.rating">★</span>
+                                <span v-for="n in 5 - lesson.rating">☆</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-else="showCheckout">
+                    <div class="row" style="padding: 1%">
+                        <h1>CHECKOUT</h1>
+                        <div class="row" style="padding: 1%; border: none;box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);" v-if="cartItemCount == 0">
+                        <p style="margin: auto; text-align: center;"><strong>NO ITEMS IN CART </strong></p>
+                    </div>
+                    <div class="row" v-else >
+                        <div  v-for="(lesson, index) in cart" :key="index">
+                            <div class="column" >
+                                <img  v-bind:src="lesson.Image" style="margin-left: 10%;">
+                                    <div class="text" style="display: inline-block;margin-left: 10%;">
+                                        <h2 v-text="lesson.subject"></h2>
+                                        <h3 v-text="lesson.location">London</h3>
+                                        <p>Price: {{lesson.price}}</p>
+                                        <p>Quantity: {{lesson.quantity}}</p>
+                                        <button class="addtoCartButton"v-on:click="removeFromCart(index,lesson)">Remove from Cart</button>
+                                        <span v-for="n in lesson.rating">★</span>
+                                        <span v-for="n in 5 - lesson.rating">☆</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                         <h2 style="margin-left: 1%;" >TOTAL: $ {{totalprice}}</h2>
+                    </div>
+                    <div class="row" style="padding: 1%;"> 
+                        <div style="padding: 1%;float: left; width: 49%; border: none; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); background-color: white;"> 
+                            <h1>User Credentials</h1>
+                            <div class="row" style="border: none;">
+                                <div style="float:left">
+                                    <p>
+                                        <strong>Full Name:</strong>
+                                        <input id="fullName" @change="checkCredentials();" v-model.trim="order.fullName">
+                                    </p>
+                                    <p>
+                                        <strong>Contact Number:</strong>
+                                        <input id="phoneNumber" @change="checkCredentials();" v-model.trim="order.phone">
+                                    </p>
+                                    <p>
+                                        <input type="checkbox" id="gift" value="false" v-model="order.Gift" v-bind:true-value="order.SendGift" 
+                                        v-bind:false-value="order.dontSendGift">
+                                        <label for="gift">Send as Gift?</label>
+                                    </p>
+                                    <p>
+                                        <input type="radio" id="home" value="Home" v-model="order.Method">
+                                        <label for="home">Home</label>
+                                        <br>
+                                        <input type="radio" id="Business" value="Business" v-model="order.Method">
+                                        <label for="Business">Business</label>
+                                    </p>
+                                </div>
+                                <div style="float:right;">
+                                    <p>
+                                        <strong>Address:</strong>
+                                        <input v-model="order.Address">
+                                    </p>
+                                    <p>
+                                        <strong>City:</strong>
+                                        <input v-model="order.City">
+                                    </p>
+                                    <p >
+                                        <strong>State:</strong>
+                                        <select v-model="order.State" style="width: 100%;">
+                                            <option disabled value="State">State</option>
+                                            <option v-for="(State,key) in State" v-bind:value="State">{{key}}</option>
+                                        </select>
+                                    </p>
+                                    <p>
+                                    <strong>Postal Code:</strong>
+                                    <input v-model.number="order.PostalCode" type="number">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="float: right; width: 49%; padding: 1%; border: none;box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); background-color: white; margin-left: 1%;">
+                            <h1>Order Details</h1>
+                            <div class="row" style="border: none; padding: 1%;">
+                                <div style="float:left">
+                                    <p>Full Name: <strong> {{order.fullName}}</strong></p>
+                                    <p>Contact Number: <strong>{{order.phone}}</strong></p>
+                                    <p>Send As Gift? <strong>{{order.Gift}}</strong></p>
+                                    <p>Method: <strong>{{order.Method}}</strong></p>
+                                </div>
+                                <div style="float:right">
+                                    <p>Address: <strong> {{order.Address}}</strong></p>
+                                    <p>City: <strong> {{order.City}}</strong></p>
+                                    <p>State: <strong>{{order.State}}</strong></p>
+                                    <p>Postal Code: <strong>{{order.PostalCode}}</strong></p>     
+                                </div>
+                            </div>
+                        </div>
+                    </div>     
+                    <br>   
+                    <button id="submitButton" style="margin-left: 1%; background-color: black;color: white;" v-if="cartItemCount != 0" class="button" v-on:click="submitForm">PLACE ORDER</button>
+                    <button id="submitButton" style="margin-left: 1%; background-color: rgb(56, 55, 55);color: white;visibility: hidden;" class="button" disabled='disabled' v-else>PLACE ORDER</button>
+                    <br>
+            </div>
+        </div>
+    </body>
+    <script>
+        var webstore = new Vue({
+            el:"#app",
+            data:{
+                showLesson:"true",
+                sitename:"After School Club",
+                searchString:"",
+                order: {
+                    firstName:'',
+                    lastName:'',
+                    phone:'',
+                    Address:'',
+                    City:'',
+                    PostalCode:'',
+                    Method:'Home',
+                    Gift:"Do Not Send As A Gift",
+                    SendGift:"Send As A Gift",
+                    dontSendGift:"Do Not Send As A Gift",
+                },
+    
+                State:{
+                        AL:"Alabama",
+                        AR:"Arizona",
+                        CA:"California",
+                        NV:"Nevada",
+                },
+                lesson: lessons,
+                cart:[],
+            },
+    
+            methods:{
+                sort(value){
+                     if(document.getElementById("Ascending").checked){
+                        this.lesson.sort((a,b) => 
+                        a[value] > b[value] ? 1 : -1);
+                    }
+                    else if(document.getElementById("Descending").checked){
+                        this.lesson.sort((a,b) => 
+                        a[value] < b[value] ? 1 : -1);
+                    }
+                },
+
+                addToCart(lesson){
+                  if(lesson.availableInventory > 0){
+                    let itemFound = this.cart.find(item => item.id == lesson.id);
+                    if(itemFound){
+                    itemFound.quantity++;
+                    }
+                    else{
+                      this.cart.push(lesson);
+                    }
+                    lesson.availableInventory--;
+                    
+                  }
+                },
+                
+                removeFromCart(index,lesson){
+                  lesson.quantity--;
+                  lesson.availableInventory++;
+                  if(lesson.quantity == 0){
+                    this.cart.splice(index,1)
+                    lesson.quantity = 1;
+                  } 
+                },
+    
+                showCheckout(){
+                    this.showLesson = this.showLesson ? false : true;
+                },
+    
+                submitForm(){
+                    // alert("Order Placed");
+                    console.log(this.cart[0].availableInventory);
+                    console.log(this.cart);
+
+                },
+                canAddtoCart(lesson){
+                    return lesson.availableInventory > this.cartCount(lesson.id);    
+                }, 
+                cartCount(id){
+                    let count=0;
+                    for(let i= 0; i < this.cart.length;i++){
+                        if(this.cart[i] === id){
+                            count++;
+                        }
+                    }
+                    return count;
+                },
+
+                checkCredentials(){
+                    let nameInput = document.getElementById("fullName").value;
+                    let lettersRegex = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/;
+
+                    let phoneInput = document.getElementById("phoneNumber").value;
+                    let numbersRegex = /^[0-9]+$/;
+
+                    if(!nameInput.match(lettersRegex)){
+                        alert("Name not valid. Please enter non numeric values.")
+                        document.getElementById("submitButton").style.visibility = "hidden";
+
+                    }
+                    else if (!phoneInput.match(numbersRegex)){
+                        alert("Phone not valid. Please enter numeric values.")
+                        document.getElementById("submitButton").style.visibility = "hidden";
+
+                    }
+                    else if (nameInput.match(lettersRegex) && phoneInput.match(numbersRegex)){
+                        document.getElementById("submitButton").style.visibility = "visible";
+                    }
+                },
+               
+                    
+            },
+            computed: {
+                cartItemCount(){
+                    return this.cart.length || 0;
+                },
+                searchFilter(){
+                    return this.lesson.filter((lesson) => {
+                    return lesson.subject.toLowerCase().includes(this.searchString) || lesson.location.toLowerCase().includes(this.searchString);
+                    });
+                },
+                totalprice(){
+                    let finaltot = 0;
+                    this.cart.forEach((lesson,i) => {
+                        finaltot += lesson.price * lesson.quantity;
+                    });
+                    return finaltot;
+                },
+              },
+         })
+    
+    </script>
+</html>
