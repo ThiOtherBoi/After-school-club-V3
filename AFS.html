@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"> 
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-    <script src="lessons.js"></script>
+    <!-- <script src="lessons.js"></script> -->
     </head>
     <body>
         <header class="header">
@@ -184,8 +184,9 @@
                         CA:"California",
                         NV:"Nevada",
                 },
-                lesson: lessons,
+                lesson: [],
                 cart:[],
+                
             },
     
             methods:{
@@ -228,16 +229,20 @@
                 },
     
                 submitForm(){
-                    fetch('https://cors-anywhere.herokuapp.com/newapp06.herokuapp.com/collection/Products',{
+                    fetch('https://cors-anywhere.herokuapp.com/newapp06.herokuapp.com/collection/Orders',{
                     method:'POST',
                     headers:{
                         'Content-Type':'application/json',
+                        "Access-Control-Allow-Origin" : "*",
+                        "Access-Control-Allow-Credentials" : true
                     },
-                    body:JSON.stringify(newProduct),
+                    body:JSON.stringify(this.cart),
                 }).then(response => response.json()).then(responseJSON => {
-                    lessons = responseJSON;
                     console.log('Success: ', responseJSON);
+                    this.cart =[];
                 });
+
+                
                 },
                 canAddtoCart(lesson){
                     return lesson.availableInventory > this.cartCount(lesson.id);    
@@ -292,7 +297,12 @@
                     });
                     return finaltot;
                 },
+                
               },
+            created: function (){
+                fetch("https://cors-anywhere.herokuapp.com/newapp06.herokuapp.com/collection/Lessons")
+                .then(response => response.json()).then(data => (this.lesson = data));
+            }
          })
     
     </script>
