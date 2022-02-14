@@ -1,5 +1,25 @@
 {
   "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "mongodb": "^4.3.1",
     "node": "^17.1.0"
-  }
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "after-school-club-v3",
+  "description": "After_School_Club Coursework 1 Submission",
+  "version": "1.0.0",
+  "main": "lessons.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThiOtherBoi/After-school-club-V3.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ThiOtherBoi/After-school-club-V3/issues"
+  },
+  "homepage": "https://github.com/ThiOtherBoi/After-school-club-V3#readme"
 }

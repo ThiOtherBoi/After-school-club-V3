@@ -228,10 +228,16 @@
                 },
     
                 submitForm(){
-                    // alert("Order Placed");
-                    console.log(this.cart[0].availableInventory);
-                    console.log(this.cart);
-
+                    fetch('https://cors-anywhere.herokuapp.com/newapp06.herokuapp.com/collection/Products',{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json',
+                    },
+                    body:JSON.stringify(newProduct),
+                }).then(response => response.json()).then(responseJSON => {
+                    lessons = responseJSON;
+                    console.log('Success: ', responseJSON);
+                });
                 },
                 canAddtoCart(lesson){
                     return lesson.availableInventory > this.cartCount(lesson.id);    
