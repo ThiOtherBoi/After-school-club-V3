@@ -91,11 +91,11 @@
                                 <div style="float:left">
                                     <p>
                                         <strong>Full Name:</strong>
-                                        <input id="fullName" @change="checkCredentials();" v-model.trim="order.fullName">
+                                        <input type="text" name="full_name" id="fullName" @change="checkCredentials();" v-model.trim="order.fullName">
                                     </p>
                                     <p>
                                         <strong>Contact Number:</strong>
-                                        <input id="phoneNumber" @change="checkCredentials();" v-model.trim="order.phone">
+                                        <input type="text" name="contact" id="phoneNumber" @change="checkCredentials();" v-model.trim="order.phone">
                                     </p>
                                     <p>
                                         <input type="checkbox" id="gift" value="false" v-model="order.Gift" v-bind:true-value="order.SendGift" 
@@ -159,6 +159,14 @@
         </div>
     </body>
     <script>
+          var ordersDB = "Orders"
+
+//           window.onload = function() {
+//             let fullName =document.getElementById('fullname');
+//           let phoneNo = document.getElementById('phoneNumber');
+//           console.log(fullName.value)
+// };
+         
         var webstore = new Vue({
             el:"#app",
             data:{
@@ -186,9 +194,9 @@
                 },
                 lesson: [],
                 cart:[],
+                LessonID : [],
                 
             },
-    
             methods:{
                 sort(value){
                      if(document.getElementById("Ascending").checked){
@@ -210,8 +218,7 @@
                     else{
                       this.cart.push(lesson);
                     }
-                    lesson.availableInventory--;
-                    
+                    lesson.availableInventory--;  
                   }
                 },
                 
@@ -227,22 +234,41 @@
                 showCheckout(){
                     this.showLesson = this.showLesson ? false : true;
                 },
-    
+
                 submitForm(){
-                    fetch('https://cors-anywhere.herokuapp.com/newapp06.herokuapp.com/collection/Orders',{
+                    let nameInput = document.getElementById("fullName").value;
+                    let phoneInput = document.getElementById("phoneNumber").value;
+                let cartID;
+                for(let i = 0; i < this.cart.length; i++){
+                    cartID = this.cart[i]._id;
+                    this.LessonID[i] = cartID;
+                    //PUT FETCH
+                    fetch('https://cors-anywhere.herokuapp.com/newapp06.herokuapp.com/collection/Lessons/'+cartID+'',
+                    {
+                        method:'PUT',
+                        headers:{
+                        'Content-Type':'application/json',
+                        "Access-Control-Allow-Origin" : "*",
+                        "Access-Control-Allow-Credentials" : true
+                    },
+                    body:JSON.stringify({availableInventory : this.cart[i].availableInventory}),
+                }).then(response => response.json()).then(responseJSON => {console.log('Success'. responseJSON)});
+            }
+            //POST FETCH
+                fetch('https://cors-anywhere.herokuapp.com/newapp06.herokuapp.com/collection/'+ordersDB+'',{
                     method:'POST',
                     headers:{
                         'Content-Type':'application/json',
                         "Access-Control-Allow-Origin" : "*",
                         "Access-Control-Allow-Credentials" : true
                     },
-                    body:JSON.stringify(this.cart),
+                    body:JSON.stringify({name: nameInput, contactNo: phoneInput, lessons : this.LessonID}),
                 }).then(response => response.json()).then(responseJSON => {
                     console.log('Success: ', responseJSON);
                     this.cart =[];
                 });
-
-                
+            console.log(this.LessonID)
+            this.cart = [];
                 },
                 canAddtoCart(lesson){
                     return lesson.availableInventory > this.cartCount(lesson.id);    
@@ -286,9 +312,9 @@
                     return this.cart.length || 0;
                 },
                 searchFilter(){
-                    return this.lesson.filter((lesson) => {
-                    return lesson.subject.toLowerCase().includes(this.searchString) || lesson.location.toLowerCase().includes(this.searchString);
-                    });
+                        return this.lesson.filter((lesson) => {
+                        return lesson.subject.toLowerCase().includes(this.searchString) || lesson.location.toLowerCase().includes(this.searchString);
+                        });
                 },
                 totalprice(){
                     let finaltot = 0;
@@ -298,11 +324,14 @@
                     return finaltot;
                 },
                 
+                
               },
             created: function (){
+                //GET FETCH
                 fetch("https://cors-anywhere.herokuapp.com/newapp06.herokuapp.com/collection/Lessons")
                 .then(response => response.json()).then(data => (this.lesson = data));
             }
+            
          })
     
     </script>

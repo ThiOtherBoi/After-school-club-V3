@@ -46,6 +46,14 @@ app.get('/collection/:collectionName', (req, res, next) => {
     })
 })
 
+app.get('/collection/:collectionName/:search', (req, res, next) => {
+    req.collection.find({ subject: { $regex: req.params.search, $options: "i" }}).toArray((e, results) => {
+        if (e) return next(e)
+        res.send(results)
+    })
+})
+
+
 //adding post
 app.post('/collection/:collectionName', (req, res, next) => {
 req.collection.insert(req.body, (e, results) => {
@@ -66,6 +74,8 @@ res.send(result)
 })
 
 
+
+
 //update an object 
 
 app.put('/collection/:collectionName/:id', (req, res, next) => {
@@ -77,9 +87,7 @@ req.collection.update(
 if (e) return next(e)
 // res.send((result.result.n === 1) ? {msg: 'success'} : {msg: 'error'})
 res.send(
-
     result.modifiedCount === 1 ? { msg: "success" } : { msg: "error" }
-    
     );
 
 })
