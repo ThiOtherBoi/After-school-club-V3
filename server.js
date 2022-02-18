@@ -10,6 +10,7 @@ const app = express()
 var path = require("path");
 var fs = require("fs");
 
+
 // config Express.js
 app.use(express.json())
 app.set('port', 3000)
@@ -27,6 +28,7 @@ MongoClient.connect('mongodb+srv://SteveSoares:Steve007@cluster0.ypfeo.mongodb.n
 
 app.use(cors());
 
+
 app.use(function(req, res, next) {
     // Uses path.join to find the path where the file should be
     var filePath = path.join(__dirname,"static", req.url);
@@ -42,9 +44,9 @@ app.use(function(req, res, next) {
 });
 
 
-
 // dispaly a message for root path to show that API is working
 app.get('/', (req, res, next) => {
+  
     res.send('Select a collection, e.g., /collection/messages, this is from heroku server')
 })
 
@@ -123,10 +125,7 @@ res.send((result.deletedCount === 1) ?
 })
 })
 
-app.use(function(req, res) {
-    res.status(404);
-    res.send("File Not Found")
- });
+
 const port = process.env.PORT || 3000
 app.listen(port)
 
