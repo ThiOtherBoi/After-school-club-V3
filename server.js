@@ -58,10 +58,10 @@ app.get('/collection/:collectionName', (req, res, next) => {
         res.send(results)
     })
 })
-// search through all the objects from an collection
 
+// search through all the objects from an collection
 app.get('/collection/:collectionName/:search', (req, res, next) => {
-    req.collection.find({ subject: { $regex: req.params.search, $options: "i" }, location: { $regex: req.params.search, $options: "i" }}).toArray((e, results) => {
+    req.collection.find({ subject: { $regex: req.params.search, $options: "i" }}).toArray((e, results) => {
         if (e) return next(e)
         res.send(results)
     })

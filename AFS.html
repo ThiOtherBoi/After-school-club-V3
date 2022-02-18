@@ -314,7 +314,7 @@
                         // return lesson.subject.toLowerCase().includes(this.searchString) || lesson.location.toLowerCase().includes(this.searchString);
                         // });
                         
-                        fetch("http://cors-anywhere.herokuapp.com/newapp06.herokuapp.com/collection/Lessons/"+ this.searchString + "")
+                        fetch("https://cors-anywhere.herokuapp.com/newapp06.herokuapp.com/collection/Lessons/"+ this.searchString + "")
                             .then(function (response){
                                  response.json().then(
                                         function (json){
