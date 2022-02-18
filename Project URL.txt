@@ -1,2 +1,14 @@
+Github Repository
+https://github.com/ThiOtherBoi/After-school-club-V3
+
+Github Backend Repository
+https://github.com/ThiOtherBoi/After-school-club-V3/blob/main/server.js
+
 MAIN FRONT END
 https://thiotherboi.github.io/After-school-club-V3/AFS.html
+
+Heroku Lessons Route
+https://afterschool-club-version-2.herokuapp.com/collection/Lessons
+
+Heroku Orders Route
+https://afterschool-club-version-2.herokuapp.com/collection/Orders
