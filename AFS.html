@@ -194,7 +194,6 @@
                 },
                 lesson: [],
                 cart:[],
-                LessonID : [],
                 
             },
             methods:{
@@ -241,7 +240,6 @@
                 let cartID;
                 for(let i = 0; i < this.cart.length; i++){
                     cartID = this.cart[i]._id;
-                    this.LessonID[i] = cartID;
                     //PUT FETCH
                     fetch('https://cors-anywhere.herokuapp.com/newapp06.herokuapp.com/collection/Lessons/'+cartID+'',
                     {
@@ -262,7 +260,7 @@
                         "Access-Control-Allow-Origin" : "*",
                         "Access-Control-Allow-Credentials" : true
                     },
-                    body:JSON.stringify({name: nameInput, contactNo: phoneInput, lessons : this.LessonID}),
+                    body:JSON.stringify({name: nameInput, contactNo: phoneInput, Items : this.cart}),
                 }).then(response => response.json()).then(responseJSON => {
                     console.log('Success: ', responseJSON);
                     this.cart =[];
@@ -316,7 +314,7 @@
                         // return lesson.subject.toLowerCase().includes(this.searchString) || lesson.location.toLowerCase().includes(this.searchString);
                         // });
                         
-                        fetch("http://localhost:3000/collection/Lessons/"+ this.searchString + "")
+                        fetch("http://cors-anywhere.herokuapp.com/newapp06.herokuapp.com/collection/Lessons/"+ this.searchString + "")
                             .then(function (response){
                                  response.json().then(
                                         function (json){

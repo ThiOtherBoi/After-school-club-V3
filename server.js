@@ -10,7 +10,6 @@ const app = express()
 var path = require("path");
 var fs = require("fs");
 
-
 // config Express.js
 app.use(express.json())
 app.set('port', 3000)
@@ -28,11 +27,8 @@ MongoClient.connect('mongodb+srv://SteveSoares:Steve007@cluster0.ypfeo.mongodb.n
 
 app.use(cors());
 
-
 app.use(function(req, res, next) {
-    // Uses path.join to find the path where the file should be
     var filePath = path.join(__dirname,"static", req.url);
-    // Built-in fs.stat gets info about a file
     fs.stat(filePath, function(err, fileInfo) {
     if (err) {
      next();
