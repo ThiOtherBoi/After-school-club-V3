@@ -46,10 +46,8 @@ app.get('/', (req, res, next) => {
     res.send('Select a collection, e.g., /collection/messages, this is from heroku server')
 })
 
-// get the collection name
 app.param('collectionName', (req, res, next, collectionName) => {
     req.collection = db.collection(collectionName)
-    // console.log('collection name:', req.collection)
     return next()
 })
 
@@ -60,9 +58,10 @@ app.get('/collection/:collectionName', (req, res, next) => {
         res.send(results)
     })
 })
+// search through all the objects from an collection
 
 app.get('/collection/:collectionName/:search', (req, res, next) => {
-    req.collection.find({ subject: { $regex: req.params.search, $options: "i" }}).toArray((e, results) => {
+    req.collection.find({ subject: { $regex: req.params.search, $options: "i" }, location: { $regex: req.params.search, $options: "i" }}).toArray((e, results) => {
         if (e) return next(e)
         res.send(results)
     })
@@ -78,7 +77,6 @@ res.send(results.ops)
 })
 
 // return with object id 
-
 const ObjectID = require('mongodb').ObjectID;
 app.get('/collection/:collectionName/:id'
 , (req, res, next) => {
@@ -87,9 +85,6 @@ if (e) return next(e)
 res.send(result)
 })
 })
-
-
-
 
 //update an object 
 

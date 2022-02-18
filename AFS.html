@@ -318,9 +318,9 @@
                             .then(function (response){
                                  response.json().then(
                                         function (json){
-                                        this .lesson = json;
+                                        this.lesson = JSON.parse(JSON.stringify(json));
                                         console.log(json);
-                                    });
+                                    })
                          });
            
                 },
@@ -339,7 +339,6 @@
                 fetch("https://cors-anywhere.herokuapp.com/newapp06.herokuapp.com/collection/Lessons")
                 .then(response => response.json()).then(data => (this.lesson = data));
             }
-            
          })
     
     </script>
