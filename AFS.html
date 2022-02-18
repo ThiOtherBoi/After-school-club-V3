@@ -312,9 +312,19 @@
                     return this.cart.length || 0;
                 },
                 searchFilter(){
-                        return this.lesson.filter((lesson) => {
-                        return lesson.subject.toLowerCase().includes(this.searchString) || lesson.location.toLowerCase().includes(this.searchString);
-                        });
+                        // return this.lesson.filter((lesson) => {
+                        // return lesson.subject.toLowerCase().includes(this.searchString) || lesson.location.toLowerCase().includes(this.searchString);
+                        // });
+                        
+                        fetch("https://cors-anywhere.herokuapp.com/newapp06.herokuapp.com/collection/Lessons/"+ this.searchString + "")
+                            .then(function (response){
+                                 response.json().then(
+                                        function (json){
+                                        webstore.lesson = json;
+                                        console.log(json);
+                                    });
+                         });
+           
                 },
                 totalprice(){
                     let finaltot = 0;
