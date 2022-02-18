@@ -41,14 +41,10 @@ app.use(function(req, res, next) {
         });
 });
 
-app.use(function(req, res) {
-   res.status(404);
-   res.send("File Not Found")
-});
+
 
 // dispaly a message for root path to show that API is working
 app.get('/', (req, res, next) => {
-  
     res.send('Select a collection, e.g., /collection/messages, this is from heroku server')
 })
 
@@ -127,7 +123,10 @@ res.send((result.deletedCount === 1) ?
 })
 })
 
-
+app.use(function(req, res) {
+    res.status(404);
+    res.send("File Not Found")
+ });
 const port = process.env.PORT || 3000
 app.listen(port)
 
