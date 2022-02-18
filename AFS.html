@@ -31,8 +31,9 @@
                   </div>
                 <span><input class="Search" type="text" v-model="searchString" placeholder="Search..."></span>
             </div>
-            <div v-if="showLesson" class="row">   
-                <div  v-for="lesson in searchFilter">
+            <div v-if="showLesson" class="row"> 
+                <div v-for="lesson in searchFilter"></div>  
+                <div  v-for="lesson in lessons">
                     <div class="column" >
                         <img  v-bind:src="lesson.Image" style="margin-left: 10%;">
                         <div class="text" style="display: inline-block;margin-left: 10%;">
@@ -192,7 +193,7 @@
                         CA:"California",
                         NV:"Nevada",
                 },
-                lesson: [],
+                lessons: [],
                 cart:[],
                 
             },
@@ -310,15 +311,11 @@
                     return this.cart.length || 0;
                 },
                 searchFilter(){
-                        // return this.lesson.filter((lesson) => {
-                        // return lesson.subject.toLowerCase().includes(this.searchString) || lesson.location.toLowerCase().includes(this.searchString);
-                        // });
-                        
                         fetch("https://cors-anywhere.herokuapp.com/newapp06.herokuapp.com/collection/Lessons/"+ this.searchString + "")
                             .then(function (response){
                                  response.json().then(
                                         function (json){
-                                        this.lesson = JSON.parse(JSON.stringify(json));
+                                        webstore.lessons = JSON.parse(JSON.stringify(json));
                                         console.log(json);
                                     })
                          });
