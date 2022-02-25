@@ -10,9 +10,10 @@ const app = express()
 var path = require("path");
 var fs = require("fs");
 
+app.use(cors());
 // config Express.js
 app.use(express.json())
-app.set('port', 3000)
+
 app.use ((req,res,next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     next();
@@ -25,7 +26,7 @@ MongoClient.connect('mongodb+srv://SteveSoares:Steve007@cluster0.ypfeo.mongodb.n
     db = client.db('Webstore')
 })
 
-app.use(cors());
+
 
 app.use(function(req, res, next) {
     var filePath = path.join(__dirname,"static", req.url);
